@@ -27,7 +27,7 @@ module CfDeployer
       merge_hash(:inputs)
       merge_hash(:tags)
       merge_array(:notify)
-      copy_region_app_env_component
+      copy_to_component
       get_cf_template_keys('Parameters')
       get_cf_template_keys('Outputs')
       set_default_settings
@@ -84,19 +84,20 @@ module CfDeployer
       @config[:targets] = @config[:component].length == 0 ? @config[:components].keys.map(&:to_s) : @config[:component]
     end
 
-    def copy_region_app_env_component
+    def copy_to_component
       @config[:components].each do |component_name, component|
-        component[:settings][:region]          = @config[:region]
-        component[:inputs][:region]            = @config[:region]
-
-        component[:settings][:application]          = @config[:application]
-        component[:inputs][:application]            = @config[:application]
+        [:region, :application, :environment].each do |setting_name|
+          component[:settings][setting_name.to_sym] ||= @config[setting_name.to_sym]
+          component[:inputs][setting_name.to_sym]   ||= @config[setting_name.to_sym]
+        end
 
         component[:settings][:component]            = component_name.to_s
         component[:inputs][:component]              = component_name.to_s
 
-        component[:settings][:environment]          = @config[:environment]
-        component[:inputs][:environment]            = @config[:environment]
+        PlugMan.nonroot_plugins.values.map(&:recognized_settings).flatten.each do |setting_name|
+          component[:settings][setting_name.to_sym] ||= @config[setting_name.to_sym]
+        end
+
       end
     end
 

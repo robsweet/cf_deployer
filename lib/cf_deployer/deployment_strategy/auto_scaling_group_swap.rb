@@ -2,7 +2,7 @@ module CfDeployer
   module DeploymentStrategy
     class AutoScalingGroupSwap < BlueGreen
 
-      
+
       def deploy
         check_blue_green_not_both_active 'Deployment'
         Log.info "Found active stack #{active_stack.name}" if active_stack
@@ -10,6 +10,7 @@ module CfDeployer
         create_inactive_stack
         swap_group
         run_hook(:'after-swap')
+        PlugMan.call_plugins :root, :after_swap, @context
         Log.info "Active stack has been set to #{inactive_stack.name}"
         delete_stack(active_stack) if active_stack && !keep_previous_stack
         Log.info "#{component_name} deployed successfully"
@@ -50,6 +51,7 @@ module CfDeployer
         inactive_stack.deploy
         get_parameters_outputs(inactive_stack)
         run_hook(:'after-create')
+        PlugMan.call_plugins :root, :after_create, @context
       end
 
       def both_stacks_active?

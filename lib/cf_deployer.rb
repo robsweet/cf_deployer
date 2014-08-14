@@ -9,6 +9,7 @@ require 'fileutils'
 require 'log4r'
 require 'pp'
 require 'forwardable'
+require 'pry'
 
 require_relative 'cf_deployer/application_error'
 require_relative 'cf_deployer/cli'
@@ -35,9 +36,11 @@ require_relative 'cf_deployer/driver/verisign_driver'
 require_relative 'cf_deployer/logger'
 require_relative 'cf_deployer/hook'
 require_relative 'cf_deployer/defaults'
+require_relative 'PlugMan'
 
 module CfDeployer
-
+  PlugMan.load_plugins "#{Dir.pwd}/cfd_plugins"
+  PlugMan.start_all_plugins
   AWS.config(:max_retries => 5)
 
   def self.config opts

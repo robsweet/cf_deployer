@@ -8,9 +8,11 @@ module CfDeployer
         create_inactive_stack
         warm_up_inactive_stack
         run_hook(:'after-create')
+        PlugMan.call_plugins :root, :after_create, @context
         swap_cname
         Kernel.sleep 60
         run_hook(:'after-swap')
+        PlugMan.call_plugins :root, :after_swap, @context
         Log.info "Active stack has been set to #{inactive_stack.name}"
         delete_stack(active_stack) if active_stack && !settings[:'keep-previous-stack']
         Log.info "#{component_name} deployed successfully"
@@ -30,7 +32,7 @@ module CfDeployer
       end
 
       def destroy_post
-        dns_driver.delete_record_set(dns_zone, dns_fqdn) 
+        dns_driver.delete_record_set(dns_zone, dns_fqdn)
       end
 
       private

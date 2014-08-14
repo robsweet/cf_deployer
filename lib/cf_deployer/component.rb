@@ -2,7 +2,7 @@ require 'diffy'
 
 module CfDeployer
   class Component
-    attr_reader :name, :dependencies, :children
+    attr_reader :name, :dependencies, :children, :context
 
     def initialize(application_name, environment_name, component_name, context)
       @application_name = application_name
@@ -29,7 +29,10 @@ module CfDeployer
         parent.deploy unless(parent.exists?)
       end
       resolve_settings
+      PlugMan.call_plugins :root, :start_maintenance, self
       strategy.deploy
+      PlugMan.call_plugins :root, :end_maintenance, self
+      PlugMan.call_plugins :root, :notify, self
     end
 
     def json

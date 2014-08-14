@@ -22,6 +22,7 @@ module CfDeployer
         warm_up_inactive_stack
         get_parameters_outputs(inactive_stack)
         run_hook(hook_to_run)
+        PlugMan.call_plugins :root, hook_to_run.to_s.gsub(/-/,'_').to_sym, @context
       end
 
       def output_value(key)

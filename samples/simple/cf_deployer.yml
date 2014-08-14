@@ -34,3 +34,5 @@ components:
       WebServerPort: 8000
     settings:
       keep-previous-stack: false
+      newrelic_api_key: the_newrelic_api_key
+      newrelic_app_name: Web (<%= environment %>)

@@ -62,6 +62,7 @@ module CfDeployer
         end
         get_parameters_outputs stack
         run_hook :'before-destroy'
+        PlugMan.call_plugins :root, :before_destroy, @context
         stack.delete
       end
 

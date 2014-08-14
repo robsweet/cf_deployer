@@ -53,11 +53,19 @@ module CfDeployer
         component[:inputs] ||= {}
         component[:defined_outputs] ||= {}
         @errors << "Component name cannot be longer than 100 and can only contain letters, numbers, '-' and '.': #{component_name}" unless component_name =~ /^[A-Za-z0-9\.-]{1,100}$/
+        check_plugin_settings component
         check_parameters component_name, component if validate_inputs
         check_cname_swap_options(component) if component[:'deployment-strategy'] == 'cname-swap'
         check_asg_name_output(component)
         check_hooks(component)
         check_component_options(component_name, component)
+      end
+    end
+
+    def check_plugin_settings component
+      required_settings = PlugMan.nonroot_plugins.values.map(&:required_settings).flatten
+      required_settings.each do |setting|
+        @errors << "The setting '#{setting}' is required" unless component[:settings][setting]
       end
     end
 
