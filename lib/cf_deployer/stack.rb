@@ -6,7 +6,7 @@ module CfDeployer
     SUCCESS_STATS = [:create_complete, :update_complete, :update_rollback_complete, :delete_complete]
     READY_STATS = SUCCESS_STATS - [:delete_complete]
     FAILED_STATS = [:create_failed, :update_failed, :delete_failed]
-
+    MAX_TEMPLATE_BYTES = 51_200
 
     def initialize(stack_name, component, context)
       @stack_name = stack_name
@@ -18,6 +18,9 @@ module CfDeployer
     def deploy
       config_dir = @context[:config_dir]
       template = CfDeployer::ConfigLoader.component_json(@component, @context)
+      template = JSON.minify( template ) if template.bytesize > MAX_TEMPLATE_BYTES
+      raise ApplicationError.new("CloudFormation template is > #{MAX_TEMPLATE_BYTES} bytes") if template.bytesize > MAX_TEMPLATE_BYTES
+
       capabilities = @context[:capabilities] || []
       notify = @context[:notify] || []
       tags = @context[:tags] || {}
