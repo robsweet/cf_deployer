@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'thor'
   gem.add_runtime_dependency 'rainbow'
   gem.add_runtime_dependency 'diffy'
+  gem.add_runtime_dependency 'json-minify'
 
   gem.files         = `git ls-files`.split($\).reject {|f| f =~ /^samples\// }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
