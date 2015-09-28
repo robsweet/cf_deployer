@@ -1,27 +1,44 @@
 PATH
   remote: .
   specs:
-    cf_deployer (1.3.0)
-      aws-sdk
+    cf_deployer (1.3.1)
+      aws-sdk (~> 1.5)
+      diffy
+      json-minify
       log4r
       rainbow
       thor
 
+PATH
+  remote: ../ruby-openstack_heat
+  specs:
+    openstack_heat (1.0.0)
+      json
+      openstack
+      openstack_heat
+      pry
+
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (1.44.0)
+    aws-sdk (1.63.0)
+      aws-sdk-v1 (= 1.63.0)
+    aws-sdk-v1 (1.63.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
     coderay (1.1.0)
     diff-lcs (1.2.5)
     diffy (3.0.6)
     json (1.8.1)
+    json-minify (0.0.2)
+      json (> 0)
     log4r (1.1.10)
     method_source (0.8.2)
-    mini_portile (0.6.0)
-    nokogiri (1.6.2.1)
-      mini_portile (= 0.6.0)
+    mini_portile (0.6.2)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
+    openstack (1.1.2)
+      json
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -46,6 +63,8 @@ PLATFORMS
 DEPENDENCIES
   cf_deployer!
   diffy
+  json-minify
+  openstack_heat!
   pry
   rainbow
   rake

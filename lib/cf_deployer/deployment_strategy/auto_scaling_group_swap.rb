@@ -2,7 +2,7 @@ module CfDeployer
   module DeploymentStrategy
     class AutoScalingGroupSwap < BlueGreen
 
-      
+
       def deploy
         check_blue_green_not_both_active 'Deployment'
         Log.info "Found active stack #{active_stack.name}" if active_stack
@@ -86,7 +86,7 @@ module CfDeployer
       end
 
       def asg_driver name
-        @auto_scaling_group_drivers[name] ||= CfDeployer::Driver::AutoScalingGroup.new name
+        @auto_scaling_group_drivers[name] ||= CfDeployer::Driver::AutoScalingGroup.new @context[:settings][:platform], name
       end
 
       def asg_id_outputs

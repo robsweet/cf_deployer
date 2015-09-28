@@ -10,9 +10,9 @@ module CfDeployer
 
     def initialize(stack_name, component, context)
       @stack_name = stack_name
-      @cf_driver = context[:cf_driver] || CfDeployer::Driver::CloudFormation.new(stack_name)
       @context = context
       @component = component
+      @cf_driver = context[:cf_driver] || CfDeployer::Driver::CloudFormation.new(@context[:settings][:platform], stack_name)
     end
 
     def deploy
@@ -79,12 +79,12 @@ module CfDeployer
         resources = @cf_driver.resource_statuses.merge( { :asg_instances => {}, :instances => {} } )
         if resources['AWS::AutoScaling::AutoScalingGroup']
           resources['AWS::AutoScaling::AutoScalingGroup'].keys.each do |asg_name|
-            resources[:asg_instances][asg_name] = CfDeployer::Driver::AutoScalingGroup.new(asg_name).instance_statuses
+            resources[:asg_instances][asg_name] = CfDeployer::Driver::AutoScalingGroup.new(@context[:settings][:platform], asg_name).instance_statuses
           end
         end
         if resources['AWS::EC2::Instance']
           resources['AWS::EC2::Instance'].keys.each do |instance_id|
-            resources[:instances][instance_id] = CfDeployer::Driver::Instance.new(instance_id).status
+            resources[:instances][instance_id] = CfDeployer::Driver::Instance.new(@context[:settings][:platform], instance_id).status
           end
         end
         resources

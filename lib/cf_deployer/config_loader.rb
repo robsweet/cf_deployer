@@ -106,6 +106,7 @@ module CfDeployer
           component[:settings][:'elb-name-output'] ||= Defaults::ELBName
           component[:settings][:'dns-driver'] ||= Defaults::DNSDriver
         end
+        component[:settings][:platform] = Defaults::Platform
         component[:settings][:'raise-error-for-unused-inputs'] ||= Defaults::RaiseErrorForUnusedInputs
         component[:settings][:'auto-scaling-group-name-output'] ||= [Defaults::AutoScalingGroupName] if component[:'deployment-strategy'] == 'auto-scaling-group-swap'
         component[:settings][:'auto-scaling-group-name-output'] ||= [Defaults::AutoScalingGroupName] if component[:'defined_outputs'].keys.include?(Defaults::AutoScalingGroupName.to_sym)

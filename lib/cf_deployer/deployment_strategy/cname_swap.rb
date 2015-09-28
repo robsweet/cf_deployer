@@ -30,7 +30,7 @@ module CfDeployer
       end
 
       def destroy_post
-        dns_driver.delete_record_set(dns_zone, dns_fqdn) 
+        dns_driver.delete_record_set(dns_zone, dns_fqdn)
       end
 
       private
@@ -87,7 +87,7 @@ module CfDeployer
       end
 
       def elb_driver
-        context[:elb_driver] || CfDeployer::Driver::Elb.new
+        context[:elb_driver] || CfDeployer::Driver::Elb.new( settings[:platform] )
       end
 
       def settings
