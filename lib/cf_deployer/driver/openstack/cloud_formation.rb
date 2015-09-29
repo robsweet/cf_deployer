@@ -4,6 +4,10 @@ module CfDeployer
       class CloudFormation
 
         def initialize stack_name
+          OpenStack::Heat::Connection.create  :username    => "admin",
+                                              :api_key     => "osnodeCL3100",
+                                              :auth_url    => "http://10.201.10.12:35357/v2.0/",
+                                              :authtenant  => "demo"
           @stack_name = stack_name
         end
 
@@ -13,7 +17,12 @@ module CfDeployer
 
         def create_stack template, opts
           CfDeployer::Driver::DryRun.guard "Skipping create_stack" do
-            OpenStack::Heat::Stack.create @stack_name, template, opts         ## Fix
+            os_stack_opts = { :stack_name => @stack_name,
+                              :template   => template,
+                              :tags       => opts[:tags],
+                              :parameters => opts[:parameters]
+                            }
+            OpenStack::Heat::Stack.create os_stack_opts
           end
         end
 

@@ -15,11 +15,13 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'rainbow'
   gem.add_runtime_dependency 'diffy'
   gem.add_runtime_dependency 'json-minify'
+  # gem.add_runtime_dependency 'openstack'
+  # gem.add_runtime_dependency 'openstack_heat'
 
   gem.files         = `git ls-files`.split($\).reject {|f| f =~ /^samples\// }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "cf_deployer"
-  gem.require_paths = ["lib"]
+  gem.require_paths = ["lib", '../ruby-openstack/lib', '../ruby-openstack_heat/lib']
   gem.version       = CfDeployer::VERSION
 end

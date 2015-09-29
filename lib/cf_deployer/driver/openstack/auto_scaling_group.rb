@@ -9,6 +9,10 @@ module CfDeployer
         attr_reader :group_name, :group
 
         def initialize name, timeout
+          OpenStack::Heat::Connection.create  :username    => "admin",
+                                              :api_key     => "osnodeCL3100",
+                                              :auth_url    => "http://10.201.10.12:35357/v2.0/",
+                                              :authtenant  => "demo"
           @group_name = name
           @timeout = timeout
         end

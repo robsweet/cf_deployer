@@ -6,6 +6,11 @@ module CfDeployer
         GOOD_STATUSES = [ :running, :pending ]
 
         def initialize instance_obj_or_id
+          OpenStack::Heat::Connection.create  :username    => "admin",
+                                              :api_key     => "osnodeCL3100",
+                                              :auth_url    => "http://10.201.10.12:35357/v2.0/",
+                                              :authtenant  => "demo"
+
           if instance_obj_or_id.is_a?(String)
             @id = instance_obj_or_id
           else
