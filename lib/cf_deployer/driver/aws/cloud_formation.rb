@@ -74,6 +74,11 @@ module CfDeployer
           aws_stack.template
         end
 
+        def reformat_tags tags_hash
+          # tags_hash.keys.map { |key| { 'Key' => key.to_s, 'Value' => tags_hash[key].to_s } }
+          ""
+        end
+
         private
 
         def cloud_formation
@@ -85,7 +90,6 @@ module CfDeployer
         end
 
       end
-
     end
   end
 end

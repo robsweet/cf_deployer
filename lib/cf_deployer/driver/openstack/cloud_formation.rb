@@ -4,10 +4,7 @@ module CfDeployer
       class CloudFormation
 
         def initialize stack_name
-          OpenStack::Heat::Connection.create  :username    => "admin",
-                                              :api_key     => "osnodeCL3100",
-                                              :auth_url    => "http://10.201.10.12:35357/v2.0/",
-                                              :authtenant  => "demo"
+          CfDeployer::Driver::Openstack::Connection.ensure_connected
           @stack_name = stack_name
         end
 
@@ -17,10 +14,11 @@ module CfDeployer
 
         def create_stack template, opts
           CfDeployer::Driver::DryRun.guard "Skipping create_stack" do
-            os_stack_opts = { :stack_name => @stack_name,
-                              :template   => template,
-                              :tags       => opts[:tags],
-                              :parameters => opts[:parameters]
+            os_stack_opts = { :stack_name       => @stack_name,
+                              :template         => JSON.parse(template),
+                              :tags             => opts[:tags],
+                              :parameters       => opts[:parameters],
+                              :disable_rollback => opts[:disable_rollback]
                             }
             OpenStack::Heat::Stack.create os_stack_opts
           end
@@ -45,7 +43,7 @@ module CfDeployer
         end
 
         def outputs
-          heat_stack.outputs.inject({}) do |memo, o|
+          @outputs ||= heat_stack.outputs.inject({}) do |memo, o|
             memo[o['output_key']] = o['output_value']
             memo
           end
@@ -56,8 +54,7 @@ module CfDeployer
         end
 
         def query_output key
-          output = outputs.find { |o| o.key == key }
-          output && output.value
+          outputs[key]
         end
 
         def delete_stack
@@ -83,6 +80,10 @@ module CfDeployer
           heat_stack.template
         end
 
+        def reformat_tags tags_hash
+          tags_hash.keys.map { |key| "#{key.to_s}=#{tags_hash[key].to_s}" }.join ','
+        end
+
         private
 
         def heat
@@ -94,7 +95,6 @@ module CfDeployer
         end
 
       end
-
     end
   end
 end

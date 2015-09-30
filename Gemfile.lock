@@ -6,8 +6,6 @@ PATH
       diffy
       json-minify
       log4r
-      openstack
-      openstack_heat
       rainbow
       thor
 

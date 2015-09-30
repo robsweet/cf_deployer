@@ -106,7 +106,7 @@ module CfDeployer
           component[:settings][:'elb-name-output'] ||= Defaults::ELBName
           component[:settings][:'dns-driver'] ||= Defaults::DNSDriver
         end
-        component[:settings][:platform] = Defaults::Platform
+        component[:settings][:platform] ||= Defaults::Platform
         component[:settings][:'raise-error-for-unused-inputs'] ||= Defaults::RaiseErrorForUnusedInputs
         component[:settings][:'auto-scaling-group-name-output'] ||= [Defaults::AutoScalingGroupName] if component[:'deployment-strategy'] == 'auto-scaling-group-swap'
         component[:settings][:'auto-scaling-group-name-output'] ||= [Defaults::AutoScalingGroupName] if component[:'defined_outputs'].keys.include?(Defaults::AutoScalingGroupName.to_sym)
@@ -118,7 +118,7 @@ module CfDeployer
 
     def get_cf_template_keys(name)
       @config[:components].keys.each do |component|
-        parameters = cf_template(component)[name] || {}
+        parameters = cf_template(component)[name] || cf_template(component)[name.downcase] || {}
         @config[:components][component]["defined_#{name.downcase}".to_sym] = symbolize_all_keys(parameters)
       end
     end

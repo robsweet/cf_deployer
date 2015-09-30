@@ -6,7 +6,7 @@ module CfDeployer
     DNSDriver = 'CfDeployer::Driver::Route53'
     RaiseErrorForUnusedInputs = false
     KeepPreviousStack = true
-    # Platform = 'AWS'
+    Platform = 'AWS'
     Platform = 'Openstack'
   end
 end

@@ -119,7 +119,7 @@ module CfDeployer
                               :disable_rollback => true,
                               :capabilities => capabilities,
                               :notify => notify,
-                              :tags => reformat_tags(tags),
+                              :tags => @cf_driver.reformat_tags(tags),
                               :parameters => params
       wait_for_stack_op_terminate
     end
@@ -155,8 +155,5 @@ module CfDeployer
       }
     end
 
-    def reformat_tags tags_hash
-      tags_hash.keys.map { |key| { 'Key' => key.to_s, 'Value' => tags_hash[key].to_s } }
-    end
   end
 end
