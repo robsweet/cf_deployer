@@ -3,8 +3,6 @@ module CfDeployer
     module AWS
       class Instance
 
-        GOOD_STATUSES = [ :running, :pending ]
-
         def initialize instance_obj_or_id
           if instance_obj_or_id.is_a?(String)
             @id = instance_obj_or_id

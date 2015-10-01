@@ -3,8 +3,6 @@ module CfDeployer
     module Openstack
       class Instance
 
-        GOOD_STATUSES = [ :running, :pending ]
-
         def initialize instance_obj_or_id
           CfDeployer::Driver::Openstack::Connection.ensure_connected
 
@@ -17,15 +15,27 @@ module CfDeployer
 
         def status
           instance_info = { }
-          [:status, :public_ip_address, :private_ip_address, :image_id].each do |stat|
-            instance_info[stat] = aws_instance.send(stat)
+          [:status, :image].each do |stat|
+            instance_info[stat] = server.send(stat)
           end
-          instance_info[:key_pair] = aws_instance.key_pair.name
+          instance_info[:public_ip_address] = public_ip_address
+          instance_info[:private_ip_address] = private_ip_address
+          instance_info[:key_pair] = server.key_name
           instance_info
         end
 
-        def aws_instance
-          @instance_obj ||= ::AWS::EC2.new.instances[@id]
+        def public_ip_address
+          pub = server.addresses.detect { |address| address.label == 'public' }
+          pub ? pub.address : nil
+        end
+
+        def private_ip_address
+          priv = server.addresses.detect { |address| address.label == 'private' }
+          priv ? priv.address : nil
+        end
+
+        def server
+          @instance_obj ||= CfDeployer::Driver::Openstack::Connection.nova_conn.get_server @id
         end
       end
     end

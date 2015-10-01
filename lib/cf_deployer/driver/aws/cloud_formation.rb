@@ -7,6 +7,14 @@ module CfDeployer
           @stack_name = stack_name
         end
 
+        def asg_type_name
+          'AWS::AutoScaling::AutoScalingGroup'
+        end
+
+        def instance_type_name
+          'AWS::EC2::Instance'
+        end
+
         def stack_exists?
           aws_stack.exists?
         end

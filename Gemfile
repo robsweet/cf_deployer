@@ -5,6 +5,7 @@ gemspec
 
 gem 'yard'
 gem 'pry'
+gem 'pry-debugger'
 gem 'rspec'
 gem 'rake'
 gem 'rainbow'

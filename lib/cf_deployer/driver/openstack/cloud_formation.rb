@@ -8,6 +8,14 @@ module CfDeployer
           @stack_name = stack_name
         end
 
+        def asg_type_name
+          'OS::Heat::AutoScalingGroup'
+        end
+
+        def instance_type_name
+          'OS::Nova::Server'
+        end
+
         def stack_exists?
           !heat_stack.nil?
         end
@@ -69,9 +77,9 @@ module CfDeployer
 
         def resource_statuses
           resources = {}
-          heat_stack.resource_summaries.each do |rs|
-            resources[rs[:resource_type]] ||= {}
-            resources[rs[:resource_type]][rs[:physical_resource_id]] = rs[:resource_status]
+          heat_stack.resources.each do |rs|
+            resources[rs['resource_type']] ||= {}
+            resources[rs['resource_type']][rs['physical_resource_id']] = rs['resource_status']
           end
           resources
         end
