@@ -7,6 +7,5 @@ module CfDeployer
     RaiseErrorForUnusedInputs = false
     KeepPreviousStack = true
     Platform = 'AWS'
-    Platform = 'Openstack'
   end
 end
