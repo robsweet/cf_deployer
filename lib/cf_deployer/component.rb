@@ -35,15 +35,15 @@ module CfDeployer
     def json
       resolve_settings
       puts "#{name} json template:"
-      puts ConfigLoader.component_json(name, @context)
+      puts JSON.pretty_generate(JSON.parse(ConfigLoader.component_json(name, @context)))
     end
 
     def diff
       resolve_settings
-      current_json = strategy.active_template
+      current_json = JSON.pretty_generate(JSON.parse(strategy.active_template))
       if current_json
         puts "#{name} json template diff:"
-        new_json = ConfigLoader.component_json(name, @context)
+        new_json = JSON.pretty_generate(JSON.parse(ConfigLoader.component_json(name, @context)))
         Diffy::Diff.default_format = :color
         puts Diffy::Diff.new( current_json, new_json )
       else
