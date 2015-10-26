@@ -11,21 +11,6 @@ PATH
       rainbow
       thor
 
-PATH
-  remote: ../ruby-openstack
-  specs:
-    openstack (1.1.2)
-      json
-
-PATH
-  remote: ../ruby-openstack_heat
-  specs:
-    openstack_heat (1.0.0)
-      json
-      openstack
-      openstack_heat
-      pry
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -80,8 +65,6 @@ DEPENDENCIES
   cf_deployer!
   diffy
   json-minify
-  openstack!
-  openstack_heat!
   pry
   pry-debugger
   rainbow
