@@ -13,20 +13,20 @@ module CfDeployer
     class_option :inputs,        :aliases => '-i', :type => :hash, :desc => "key:value pair to overwrite in template inputs"
     class_option :region,        :aliases => '-r', :desc => "Amazon region", :default => 'us-east-1'
 
-    desc "deploy [ENVIRONMENT] [COMPONENT]\t", 'Deploy the specified components'
+    desc "deploy [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Deploy the specified components'
     def deploy environment, component = nil
       prep_for_action :deploy, environment, component
       CfDeployer.deploy merged_options
     end
 
-    desc "runhook [ENVIRONMENT] [COMPONENT] [HOOK_NAME]\t", 'Run the specified hook'
+    desc "runhook [ENVIRONMENT] [COMPONENT] [HOOK_NAME] <OPTIONS>\t", 'Run the specified hook'
     def runhook environment, component, hook_name
       @hook_name = hook_name.to_sym
       prep_for_action :runhook, environment, component
       CfDeployer.runhook merged_options
     end
 
-    desc "destroy [ENVIRONMENT] [COMPONENT]\t", 'Destroy the specified environment/component'
+    desc "destroy [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Destroy the specified environment/component'
     def destroy environment, component = nil
       prep_for_action :destroy, environment, component
       CfDeployer.destroy merged_options
@@ -38,19 +38,19 @@ module CfDeployer
       CfDeployer.config merged_options
     end
 
-    desc "diff [ENVIRONMENT] [COMPONENT]", 'Show a diff between the template of the active stack and the parsed CloudFormation JSON for the target component'
+    desc "diff [ENVIRONMENT] [COMPONENT] <OPTIONS>", 'Show a diff between the template of the active stack and the parsed CloudFormation JSON for the target component'
     def diff environment, component = nil
       prep_for_action :diff, environment, component
       CfDeployer.diff merged_options
     end
 
-    desc "json [ENVIRONMENT] [COMPONENT]", 'Show parsed CloudFormation JSON for the target component'
+    desc "json [ENVIRONMENT] [COMPONENT] <OPTIONS>", 'Show parsed CloudFormation JSON for the target component'
     def json environment, component = nil
       prep_for_action :json, environment, component
       CfDeployer.json merged_options
     end
 
-    desc 'status [ENVIRONMENT] [COMPONENT]', 'Show the status of the specified Cloud Formation components specified in your yml'
+    desc "status [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Show the status of the specified Cloud Formation components specified in your yml'
     method_option :verbosity,  :aliases => '-v', :desc => 'Verbosity level',  :enum => ['stacks','instances','all'], :default => 'instances'
     method_option :'output-format', :aliases => '-o', :enum => ['human','json'], :default => 'human', :desc => 'Output format'
     def status environment, component = nil
@@ -58,13 +58,13 @@ module CfDeployer
       CfDeployer.status merged_options
     end
 
-    desc 'kill_inactive [ENVIRONMENT] [COMPONENT]', 'Destroy the inactive stack for a given component/environment'
+    desc "kill_inactive [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Destroy the inactive stack for a given component/environment'
     def kill_inactive environment, component
       prep_for_action :kill_inactive, environment, component
       CfDeployer.kill_inactive merged_options
     end
 
-    desc 'switch [ENVIRONMENT] [COMPONENT]', 'Switch active and inactive stacks'
+    desc "switch [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Switch active and inactive stacks'
     def switch environment, component
       prep_for_action :switch, environment, component
       CfDeployer.switch merged_options
