@@ -30,11 +30,11 @@ module CfDeployer
             CfDeployer::Driver::DryRun.guard "Skipping update_stack" do
               aws_stack.update opts.merge(:template => template)
             end
-          rescue AWS::CloudFormation::Errors::ValidationError => e
+          rescue ::AWS::CloudFormation::Errors::ValidationError => e
             if e.message =~ /No updates are to be performed/
               Log.info e.message
             else
-              raise
+              raise e
             end
           end
         end
@@ -83,8 +83,7 @@ module CfDeployer
         end
 
         def reformat_tags tags_hash
-          # tags_hash.keys.map { |key| { 'Key' => key.to_s, 'Value' => tags_hash[key].to_s } }
-          ""
+          tags_hash.keys.map { |key| { 'Key' => key.to_s, 'Value' => tags_hash[key].to_s } }
         end
 
         private

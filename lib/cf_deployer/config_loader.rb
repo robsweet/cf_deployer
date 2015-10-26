@@ -2,6 +2,8 @@ module CfDeployer
   class ConfigLoader
 
     def self.component_json component, config
+      @@ec2 ||= AWS::EC2.new
+      ec2 = @@ec2
       json_file = File.join(config[:config_dir], "#{component}.json")
       raise ApplicationError.new("#{json_file} is missing") unless File.exists?(json_file)
       CfDeployer::Log.info "ERBing JSON for #{component}"
@@ -28,8 +30,12 @@ module CfDeployer
       merge_hash(:tags)
       merge_array(:notify)
       copy_region_app_env_component
-      get_cf_template_keys('Parameters')
-      get_cf_template_keys('Outputs')
+      AWS.memoize do
+        with_cached_templates do
+          get_cf_template_keys('Parameters')
+          get_cf_template_keys('Outputs')
+        end
+      end
       set_default_settings
       @config.delete(:settings)
       @config
@@ -116,6 +122,13 @@ module CfDeployer
       end
     end
 
+    def with_cached_templates
+      @template_cache = {}
+      @config[:components].each { |component, junk| @template_cache[component] = cf_template(component) }
+      yield
+      @template_cache = nil
+    end
+
     def get_cf_template_keys(name)
       @config[:components].keys.each do |component|
         parameters = cf_template(component)[name] || cf_template(component)[name.downcase] || {}
@@ -124,6 +137,7 @@ module CfDeployer
     end
 
     def cf_template(component)
+      return @template_cache[component] if (@template_cache && @template_cache[component])
       config =  deep_dup(@config[:components][component])
       config[:inputs].each do |key, value|
         if value.is_a?(Hash)
