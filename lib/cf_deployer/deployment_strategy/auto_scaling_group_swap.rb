@@ -86,7 +86,7 @@ module CfDeployer
       end
 
       def asg_driver name
-        @auto_scaling_group_drivers[name] ||= CfDeployer::Driver::AutoScalingGroup.new @context[:settings][:platform], name
+        @auto_scaling_group_drivers[name] ||= CfDeployer::Driver::AutoScalingGroup.new @context[:settings][:platform], name, @context[:settings][:region]
       end
 
       def asg_id_outputs

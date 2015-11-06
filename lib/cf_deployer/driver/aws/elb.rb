@@ -9,8 +9,8 @@ module CfDeployer
 
         private
 
-        def elb_driver
-          ::AWS::ELB.new
+        def elb_driver region
+          ::AWS::ELB.new region
         end
 
       end

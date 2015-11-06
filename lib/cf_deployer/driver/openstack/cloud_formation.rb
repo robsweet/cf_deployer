@@ -3,9 +3,10 @@ module CfDeployer
     module Openstack
       class CloudFormation
 
-        def initialize stack_name
+        def initialize stack_name, region
           CfDeployer::Driver::Openstack::Connection.ensure_connected
           @stack_name = stack_name
+          @region = region
         end
 
         def asg_type_name

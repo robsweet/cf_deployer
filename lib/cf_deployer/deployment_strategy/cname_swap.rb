@@ -87,7 +87,7 @@ module CfDeployer
       end
 
       def elb_driver
-        context[:elb_driver] || CfDeployer::Driver::Elb.new( settings[:platform] )
+        context[:elb_driver] || CfDeployer::Driver::Elb.new( settings[:platform], settings[:region] )
       end
 
       def settings

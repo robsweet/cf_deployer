@@ -12,7 +12,7 @@ module CfDeployer
       @stack_name = stack_name
       @context = context
       @component = component
-      @cf_driver = context[:cf_driver] || CfDeployer::Driver::CloudFormation.new(@context[:settings][:platform], stack_name)
+      @cf_driver = context[:cf_driver] || CfDeployer::Driver::CloudFormation.new(@context[:settings][:platform], stack_name, @context[:settings][:region] )
     end
 
     def deploy
@@ -79,12 +79,12 @@ module CfDeployer
         resources = @cf_driver.resource_statuses.merge( { :asg_instances => {}, :instances => {} } )
         if resources[@cf_driver.asg_type_name]
           resources[@cf_driver.asg_type_name].keys.each do |asg_name|
-            resources[:asg_instances][asg_name] = CfDeployer::Driver::AutoScalingGroup.new(@context[:settings][:platform], asg_name).instance_statuses
+            resources[:asg_instances][asg_name] = CfDeployer::Driver::AutoScalingGroup.new(@context[:settings][:platform], asg_name, @context[:settings][:region]).instance_statuses
           end
         end
         if resources[@cf_driver.instance_type_name]
           resources[@cf_driver.instance_type_name].keys.each do |instance_id|
-            resources[:instances][instance_id] = CfDeployer::Driver::Instance.new(@context[:settings][:platform], instance_id).status
+            resources[:instances][instance_id] = CfDeployer::Driver::Instance.new(@context[:settings][:platform], instance_id, @context[:settings][:region]).status
           end
         end
         resources

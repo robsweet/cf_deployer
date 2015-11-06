@@ -3,7 +3,8 @@ module CfDeployer
     module AWS
       class Instance
 
-        def initialize instance_obj_or_id
+        def initialize instance_obj_or_id, region
+          @region = region
           if instance_obj_or_id.is_a?(String)
             @id = instance_obj_or_id
           else
@@ -21,7 +22,7 @@ module CfDeployer
         end
 
         def aws_instance
-          @instance_obj ||= ::AWS::EC2.new.instances[@id]
+          @instance_obj ||= ::AWS::EC2.new( :region => @region ).instances[@id]
         end
       end
     end

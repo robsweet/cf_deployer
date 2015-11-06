@@ -8,9 +8,10 @@ module CfDeployer
 
         attr_reader :group_name, :group
 
-        def initialize name, timeout
+        def initialize name, region, timeout
           @group_name = name
           @timeout = timeout
+          @region = region
         end
 
         def describe
@@ -46,7 +47,7 @@ module CfDeployer
         def instance_statuses
           instance_info = {}
           ec2_instances.each do |instance|
-            instance_info[instance.id] = CfDeployer::Driver::Instance.new('AWS', instance).status
+            instance_info[instance.id] = CfDeployer::Driver::Instance.new('AWS', instance, @region).status
           end
           instance_info
         end
@@ -79,7 +80,7 @@ module CfDeployer
 
 
         def aws_group
-          @my_group ||= ::AWS::AutoScaling.new.groups[group_name]
+          @my_group ||= ::AWS::AutoScaling.new( :region => @region ).groups[group_name]
         end
 
       end

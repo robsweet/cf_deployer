@@ -12,8 +12,8 @@ end
 module CfDeployer
   module Driver
     class AutoScalingGroup < CfDeployer::Driver::Base
-      def self.new platform, name, timeout = CfDeployer::Defaults::Timeout
-        klass(platform).new name, timeout
+      def self.new platform, name, region, timeout = CfDeployer::Defaults::Timeout
+        klass(platform).new name, region, timeout
       end
     end
   end
@@ -23,8 +23,8 @@ module CfDeployer
   module Driver
     class CloudFormation < CfDeployer::Driver::Base
 
-      def self.new platform, stack_name
-        klass(platform).new stack_name
+      def self.new platform, stack_name, region
+        klass(platform).new stack_name, region
       end
     end
   end
@@ -33,8 +33,8 @@ end
 module CfDeployer
   module Driver
     class ELB < CfDeployer::Driver::Base
-      def self.new platform
-        klass(platform).new
+      def self.new platform, region
+        klass(platform).new region
       end
     end
   end
@@ -45,8 +45,8 @@ module CfDeployer
     class Instance < CfDeployer::Driver::Base
       GOOD_STATUSES = [ :running, :pending, 'ACTIVE', 'INITIALIZED' ]
 
-      def self.new platform, instance_obj_or_id
-        klass(platform).new instance_obj_or_id
+      def self.new platform, instance_obj_or_id, region
+        klass(platform).new instance_obj_or_id, region
       end
     end
   end

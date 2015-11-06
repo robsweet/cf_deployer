@@ -95,8 +95,8 @@ module CfDeployer
 
     def copy_region_app_env_component
       @config[:components].each do |component_name, component|
-        component[:settings][:region]          = @config[:region]
-        component[:inputs][:region]            = @config[:region]
+        component[:settings][:region]          ||= @config[:region]
+        component[:inputs][:region]            ||= @config[:region]
 
         component[:settings][:application]          = @config[:application]
         component[:inputs][:application]            = @config[:application]
