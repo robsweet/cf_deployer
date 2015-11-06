@@ -1,10 +1,12 @@
+require 'pry'
+
 module CfDeployer
   class ConfigLoader
 
     def self.component_json component, config
       @@ec2 ||= AWS::EC2.new
       ec2 = @@ec2
-      json_file = File.join(config[:config_dir], "#{component}.json")
+      json_file = File.join(config[:config_dir], "#{config[:settings][:'template-name'] || component}.json")
       raise ApplicationError.new("#{json_file} is missing") unless File.exists?(json_file)
       CfDeployer::Log.info "ERBing JSON for #{component}"
       ERB.new(File.read(json_file)).result(binding)
@@ -221,6 +223,8 @@ module CfDeployer
     end
 
     def erb_with_environment_and_region(contents, environment, region)
+      @@ec2 ||= AWS::EC2.new
+      ec2 = @@ec2
       ERB.new(contents).result(binding)
     end
 
