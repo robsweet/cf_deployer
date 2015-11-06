@@ -26,6 +26,7 @@ module CfDeployer
       @config[:tags] ||= {}
       @config[:notify] ||= []
       get_targets
+      filter_environment_components
       copy_config_dir
       merge_hash(:settings)
       merge_hash(:inputs)
@@ -147,7 +148,6 @@ module CfDeployer
           config[:inputs][key] = "#{value[:component]}::#{output_key}"
         end
       end
-
       json_content = self.class.component_json component.to_s, config
       CfDeployer::Log.info "Parsing JSON for #{component}"
       begin
@@ -168,6 +168,16 @@ module CfDeployer
         component ||= {}
         @config[:components][component_name] = component
         component[:config_dir] = config_dir
+      end
+    end
+
+    def filter_environment_components
+      @config[:environments].each do |env_name, env|
+        if env[:components]
+          env[:components].keys.each do |component|
+            env[:components].delete component unless @config[:components].keys.include? component
+          end
+        end
       end
     end
 
