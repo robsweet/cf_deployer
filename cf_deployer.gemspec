@@ -15,8 +15,8 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'rainbow'
   gem.add_runtime_dependency 'diffy'
   gem.add_runtime_dependency 'json-minify'
-  gem.add_runtime_dependency 'pry'
-  gem.add_runtime_dependency 'pry-debugger'
+  gem.add_development_dependency 'pry'
+  gem.add_development_dependency 'pry-debugger'
   # gem.add_runtime_dependency 'openstack'
   # gem.add_runtime_dependency 'openstack_heat'
 

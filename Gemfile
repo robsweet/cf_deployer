@@ -4,12 +4,19 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'yard'
-gem 'pry'
-gem 'pry-debugger'
-gem 'rspec'
-gem 'rake'
 gem 'rainbow'
 gem 'diffy'
 gem 'json-minify'
+
+group :development do
+  gem 'pry'
+  gem 'pry-debugger'
+end
+
+group :test do
+  gem 'rspec'
+  gem 'rake'
+end
+
 # gem 'openstack' , :path => '../ruby-openstack'
 # gem 'openstack_heat' , :path => '../ruby-openstack_heat'
