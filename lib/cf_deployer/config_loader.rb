@@ -1,5 +1,3 @@
-require 'pry'
-
 module CfDeployer
   class ConfigLoader
 
