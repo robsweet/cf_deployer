@@ -1,3 +1,4 @@
+require 'pry'
 require 'diffy'
 
 module CfDeployer
@@ -102,6 +103,7 @@ module CfDeployer
       inputs.each do |key, value|
         if(value.is_a? Hash)
           dependency = @dependencies.find { |d| d.name == value[:component] }
+          raise ApplicationError.new("Input #{key} depends on #{value[:component]} component but there's no depends-on for that component!") if dependency.nil?
           output_key = value[:'output-key']
           inputs[key] = dependency.output_value(output_key)
         end
