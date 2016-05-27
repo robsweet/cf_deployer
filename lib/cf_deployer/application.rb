@@ -21,6 +21,8 @@ module CfDeployer
       @context[:components].keys.each do | key |
         component = @components.find { |c| c.name == key.to_s }
         dependencies = @context[:components][key][:'depends-on'] || []
+        more_dependencies = @context[:components][key][:inputs].select { |k,v| v.is_a? Hash }.map { |k,v| v[:component] }.uniq
+        dependencies += more_dependencies
         dependencies.each do | parent_name |
           parent = @components.find { |c| c.name == parent_name }
           if parent
