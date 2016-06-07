@@ -7,6 +7,10 @@ module CfDeployer
       log.debug message
     end
 
+    def self.warn(message)
+      log.debug message
+    end
+
     def self.info(message)
       log.info message
     end

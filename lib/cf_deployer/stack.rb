@@ -42,7 +42,17 @@ module CfDeployer
 
     def output key
       begin
-        @cf_driver.query_output(key) || (raise ApplicationError.new("'#{key}' is empty from stack #{name} output"))
+# require 'pry'
+# require 'pry-debugger'
+# binding.pry
+        value = @cf_driver.query_output(key)
+        return value if value
+        if @context[:cli_options][:skip_validation]
+          Log.warn "'#{key}' is empty from stack #{name} output"
+          return 'UNDEFINED_VALUE'
+        else
+          raise ApplicationError.new("'#{key}' is empty from stack #{name} output")
+        end
       rescue AWS::CloudFormation::Errors::ValidationError => e
         raise ResourceNotInReadyState.new("Resource stack not in ready state yet, perhaps you should provision it first?")
       end

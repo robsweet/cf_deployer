@@ -18,6 +18,7 @@ module CfDeployer
       erbed_config = erb_with_environment_and_region(config_text, options[:environment], options[:region])
       yaml = symbolize_all_keys(load_yaml(erbed_config))
       @config = options.merge(yaml)
+      @config[:cli_options] = options
       @config[:components] ||= {}
       @config[:settings] ||= {}
       @config[:environments] ||= {}
@@ -104,6 +105,8 @@ module CfDeployer
 
         component[:settings][:environment]          = @config[:environment]
         component[:inputs][:environment]            = @config[:environment]
+
+        component[:cli_options] = @config[:cli_options]
       end
     end
 

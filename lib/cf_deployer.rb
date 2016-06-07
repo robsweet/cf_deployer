@@ -109,7 +109,7 @@ module CfDeployer
     AWS.config(:region => options[:region]) if options[:region]
     options[:cli_overrides] = {:settings => options.delete(:settings), :inputs => options.delete(:inputs)}
     config = ConfigLoader.new.load options
-    ConfigValidation.new.validate config, validate_inputs
+    ConfigValidation.new.validate( config, validate_inputs ) unless options[:skip_validation]
     config
   end
 
