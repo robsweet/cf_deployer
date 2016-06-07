@@ -7,6 +7,7 @@ gem 'yard'
 gem 'rainbow'
 gem 'diffy'
 gem 'json-minify'
+gem 'inifile'
 
 group :development do
   gem 'pry'

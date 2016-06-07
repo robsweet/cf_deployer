@@ -1,4 +1,5 @@
 require 'thor'
+require 'inifile'
 
 module CfDeployer
   class CLI < Thor
@@ -6,12 +7,14 @@ module CfDeployer
       true
     end
 
-    class_option :'config-file', :aliases => '-f', :desc => "cf_deployer config file", :default => 'config/cf_deployer.yml'
-    class_option :'log-level',   :aliases => '-l', :desc => "logging level", :enum => %w(info debug aws-debug), :default => 'info'
-    class_option :'dry-run',     :aliases => '-d', :desc => "Say what we would do but don't actually make changes to anything", :banner => ''
-    class_option :settings,      :aliases => '-s', :type => :hash, :desc =>  "key:value pair to overwrite setting in config"
-    class_option :inputs,        :aliases => '-i', :type => :hash, :desc => "key:value pair to overwrite in template inputs"
-    class_option :region,        :aliases => '-r', :desc => "Amazon region", :default => 'us-east-1'
+    class_option :'config-file',   :aliases => '-f', :desc => "cf_deployer config file", :default => 'config/cf_deployer.yml'
+    class_option :'log-level',     :aliases => '-l', :desc => "logging level", :enum => %w(info debug aws-debug), :default => 'info'
+    class_option :'dry-run',       :aliases => '-d', :desc => "Say what we would do but don't actually make changes to anything", :banner => ''
+    class_option :settings,        :aliases => '-s', :type => :hash, :desc =>  "key:value pair to overwrite setting in config"
+    class_option :inputs,          :aliases => '-i', :type => :hash, :desc => "key:value pair to overwrite in template inputs"
+    class_option :'aws-profile',   :aliases => '-p', :desc => "AWS profile (for credentials) to use"
+    class_option :region,          :aliases => '-r', :desc => "Amazon region", :default => 'us-east-1'
+    class_option :skip_validation, :aliases => 'skip_validations', :desc => "Skip config validation", :type => :boolean, :default => false
 
     desc "deploy [ENVIRONMENT] [COMPONENT] <OPTIONS>\t", 'Deploy the specified components'
     def deploy environment, component = nil
@@ -83,6 +86,7 @@ module CfDeployer
         validate_cli options
         set_log_level
         detect_dry_run
+        fix_aws_credentials
       end
 
       def merged_options
@@ -119,6 +123,21 @@ module CfDeployer
       def error_exit message
         puts message
         exit 1
+      end
+
+      def fix_aws_credentials
+        if ENV['AWS_ACCESS_KEY_ID'] && ENV['AWS_SECRET_ACCESS_KEY']
+          puts "Using AWS_ACCESS_KEY_ID from shell environment"
+        else
+          ENV['AWS_DEFAULT_PROFILE'] = (options[:"aws-profile"] || ENV['AWS_DEFAULT_PROFILE'] || 'default')
+          puts "Using AWS credentials profile '#{ENV['AWS_DEFAULT_PROFILE']}'"
+          creds_file = "#{ENV['HOME']}/.aws/credentials"
+          creds = IniFile.load creds_file
+          error_exit("Can't find AWS profile '#{ENV['AWS_DEFAULT_PROFILE']}' in #{creds_file}") unless creds.has_section?(ENV['AWS_DEFAULT_PROFILE'])
+          ENV['AWS_ACCESS_KEY_ID']     = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_access_key_id']
+          ENV['AWS_SECRET_ACCESS_KEY'] = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_secret_access_key']
+          puts "'#{ENV['AWS_ACCESS_KEY_ID']}' '#{ENV['AWS_SECRET_ACCESS_KEY']}'"
+        end
       end
 
     end
