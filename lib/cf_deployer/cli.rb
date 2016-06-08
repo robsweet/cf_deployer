@@ -136,7 +136,6 @@ module CfDeployer
           error_exit("Can't find AWS profile '#{ENV['AWS_DEFAULT_PROFILE']}' in #{creds_file}") unless creds.has_section?(ENV['AWS_DEFAULT_PROFILE'])
           ENV['AWS_ACCESS_KEY_ID']     = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_access_key_id']
           ENV['AWS_SECRET_ACCESS_KEY'] = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_secret_access_key']
-          puts "'#{ENV['AWS_ACCESS_KEY_ID']}' '#{ENV['AWS_SECRET_ACCESS_KEY']}'"
         end
       end
 
