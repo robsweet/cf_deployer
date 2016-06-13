@@ -86,7 +86,16 @@ module CfDeployer
 
       def group_ids(stack)
         return [] unless asg_id_outputs
-        asg_id_outputs.map { |id| stack.output id }
+        begin
+          asg_id_outputs.map { |id| stack.output id }
+        rescue ApplicationError => e
+          rs = stack.resource_statuses
+          if rs['AWS::AutoScaling::AutoScalingGroup'] && rs['AWS::AutoScaling::AutoScalingGroup'].size == 1
+            return rs['AWS::AutoScaling::AutoScalingGroup'].keys
+          else
+            raise e
+          end
+        end
       end
 
       def asg_driver name
