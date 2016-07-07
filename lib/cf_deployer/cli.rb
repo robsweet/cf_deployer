@@ -129,13 +129,15 @@ module CfDeployer
         if ENV['AWS_ACCESS_KEY_ID'] && ENV['AWS_SECRET_ACCESS_KEY']
           puts "Using AWS_ACCESS_KEY_ID from shell environment"
         else
-          ENV['AWS_DEFAULT_PROFILE'] = (options[:"aws-profile"] || ENV['AWS_DEFAULT_PROFILE'] || 'default')
           creds_file = "#{ENV['HOME']}/.aws/credentials"
-          creds = IniFile.load creds_file
-          error_exit("Can't find AWS profile '#{ENV['AWS_DEFAULT_PROFILE']}' in #{creds_file}") unless creds.has_section?(ENV['AWS_DEFAULT_PROFILE'])
-          ENV['AWS_ACCESS_KEY_ID']     = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_access_key_id']
-          ENV['AWS_SECRET_ACCESS_KEY'] = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_secret_access_key']
-          puts "Using AWS credentials profile '#{ENV['AWS_DEFAULT_PROFILE']}' with AWS_ACCESS_KEY_ID of '#{ENV['AWS_ACCESS_KEY_ID']}'"
+          if File.exist?(creds_file)
+            ENV['AWS_DEFAULT_PROFILE'] = (options[:"aws-profile"] || ENV['AWS_DEFAULT_PROFILE'] || 'default')
+            creds = IniFile.load creds_file
+            error_exit("Can't find AWS profile '#{ENV['AWS_DEFAULT_PROFILE']}' in #{creds_file}") unless creds.has_section?(ENV['AWS_DEFAULT_PROFILE'])
+            ENV['AWS_ACCESS_KEY_ID']     = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_access_key_id']
+            ENV['AWS_SECRET_ACCESS_KEY'] = creds[ENV['AWS_DEFAULT_PROFILE']]['aws_secret_access_key']
+            puts "Using AWS credentials profile '#{ENV['AWS_DEFAULT_PROFILE']}' with AWS_ACCESS_KEY_ID of '#{ENV['AWS_ACCESS_KEY_ID']}'"
+          end
         end
       end
 
